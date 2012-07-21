@@ -43,6 +43,8 @@ jQuery ->
   class CompletedTasksView extends Backbone.View
     id: 'completed-tasks'
     tagName: 'ul'
+    initialize: ->
+      @collection.bind 'change', @render, @
     render: ->
       $(@el).empty()
       for task in @collection.completedTasks()
@@ -55,6 +57,8 @@ jQuery ->
     className: 'task'
     tagName: 'li'
     template: _.template($('#completed-task-template').html())
+    events:
+      'click input.is-done': 'markIncomplete'
     render: ->
       $(@el).html @template(@model.toJSON())
       @
@@ -62,13 +66,19 @@ jQuery ->
       @$('input').prop 'disabled', true
     enable: ->
       @$('input').prop 'disabled', false
-
+    markIncomplete: ->
+      if @$('.is-done').prop('checked')
+        @model.markComplete()
+      else
+        @model.markIncomplete()
+      @model.save()
 
   class IncompleteTasksView extends Backbone.View
     id: 'tasks-to-complete'
     tagName: 'ul'
     initialize: (options) ->
       @collection.bind 'add', @render, @
+      @collection.bind 'change', @render, @
     render: ->
       $(@el).empty()
       for task in @collection.incompleteTasks()
@@ -81,10 +91,17 @@ jQuery ->
     className: 'task'
     tagName: 'li'
     template: _.template($('#incomplete-task-template').html())
+    events:
+      'click input.is-done': 'markComplete'
     render: ->
       $(@el).html @template(@model.toJSON())
       @
-
+    markComplete: ->
+      if @$('.is-done').prop('checked')
+        @model.markComplete()
+      else
+        @model.markIncomplete()
+      @model.save()
 
   class NewTaskView extends Backbone.View
     tagName: 'form'

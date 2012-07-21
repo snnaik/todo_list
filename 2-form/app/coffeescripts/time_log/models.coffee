@@ -16,6 +16,11 @@ class Task extends Backbone.Model
       if matches?.length
         return matches[1]
     ''
+  markComplete: ->
+    completedAt = (new Date).getTime()
+    @set completedAt:completedAt, duration:60
+  markIncomplete: ->
+    @set completedAt:null, duration:0
   isCompleted: ->
     @attributes.completedAt
   validate: (attributes) ->
