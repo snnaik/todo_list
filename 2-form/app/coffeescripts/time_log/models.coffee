@@ -18,5 +18,9 @@ class Task extends Backbone.Model
     ''
   isCompleted: ->
     @attributes.completedAt
+  validate: (attributes) ->
+    mergedAttributes = _.extend(_.clone(@attributes), attributes)
+    if !mergedAttributes.title or mergedAttributes.title.trim() == ''
+      return "Task title must not be blank"
 @app = window.app ? {}
 @app.Task = Task

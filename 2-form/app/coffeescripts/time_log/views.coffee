@@ -98,7 +98,10 @@ jQuery ->
       if (event.keyCode is 13) # ENTER
         event.preventDefault()
         if @collection.create({title:$('#new-task').val()})
+          @hideWarning()
           @focus()
+        else
+          @flashWarning()
     focus: ->
       $('#new-task').val('').focus()
     hideWarning: ->
