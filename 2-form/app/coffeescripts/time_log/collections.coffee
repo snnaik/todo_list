@@ -3,9 +3,13 @@
 class Tasks extends Backbone.Collection
   model: app.Task
   url: '/api/tasks'
+  comparator: (task) ->
+    task.get('createdAt')
   completedTasks: ->
-    @filter (task) ->
+    tasks = @filter (task) ->
       task.isCompleted()
+    _.sortBy tasks, (task) ->
+      task.get('completedAt')
   incompleteTasks: ->
     @reject (task) ->
       task.isCompleted()
