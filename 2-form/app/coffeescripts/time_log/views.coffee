@@ -91,22 +91,24 @@ jQuery ->
     template: _.template($('#new-task-template').html())
     events:
       'keypress #new-task': 'saveOnEnter'
+      'focusout #new-task': 'hideWarning'
     render: ->
       $(@el).html @template()
       @
     saveOnEnter: (event) ->
       if (event.keyCode is 13) # ENTER
         event.preventDefault()
-        if @collection.create({title:$('#new-task').val()})
+        newAttributes = {title:$('#new-task').val()}
+        errorCallback = {error:@flashWarning}
+        if @collection.create(newAttributes, errorCallback)
           @hideWarning()
           @focus()
-        else
-          @flashWarning()
     focus: ->
       $('#new-task').val('').focus()
     hideWarning: ->
       $('#warning').hide()
-    flashWarning: ->
+    flashWarning: (model, error) ->
+      console.log error
       $('#warning').fadeOut(100)
       $('#warning').fadeIn(400)
 
